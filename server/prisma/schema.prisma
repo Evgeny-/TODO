@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TodoStatus {
+  TODO
+  ONGOING
+  DONE
+}
+
+model User {
+  id            String           @id @default(uuid())
+  name          String           @unique
+  createdAt     DateTime         @default(now())
+  createdTodos  Todo[]           @relation("createdBy")
+  assignedTodos Todo[]           @relation("assignedTo")
+  collections   TodoCollection[]
+
+  @@index([name])
+}
+
+model TodoCollection {
+  key         String   @id
+  createdAt   DateTime @default(now())
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdById String
+  todos       Todo[]
+
+  @@index([createdById])
+}
+
+model Todo {
+  id            String         @id @default(uuid())
+  text          String
+  status        TodoStatus     @default(TODO)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  createdBy     User           @relation("createdBy", fields: [createdById], references: [id])
+  createdById   String
+  assignedTo    User           @relation("assignedTo", fields: [assignedToId], references: [id])
+  assignedToId  String
+  collection    TodoCollection @relation(fields: [collectionKey], references: [key])
+  collectionKey String
+
+  @@index([collectionKey])
+  @@index([createdById])
+}
