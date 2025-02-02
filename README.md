@@ -1,6 +1,8 @@
 # TODO app with collaboration
 
-Simple TODO app with collaboration. Uses restful API and websockets for collaboration.
+Simple TODO app with collaborations and locks. Uses restful API and websockets for collaboration.
+
+<video src="./assets/demo.mov" controls></video>
 
 # Server
 
