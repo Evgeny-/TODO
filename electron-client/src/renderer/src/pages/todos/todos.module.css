@@ -78,13 +78,12 @@
 
 .todoMeta {
   margin-top: 3px;
-  font-size: 0.9rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  font-size: 0.8rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
+  gap: 0px;
 }
 
 .todoMeta div {

@@ -21,11 +21,11 @@ import {
   allowedStatusTransitions,
   panelStatusOrder,
   Todo,
-  TodoDate,
   TodoStatus,
   todoStatusNames,
 } from './todo-panel';
 import { User } from '@renderer/utils/collaboration';
+import { TodoDate } from '@renderer/utils/dates';
 
 export function AddTodoModal({
   isOpen,
@@ -137,7 +137,7 @@ export function EditTodoModal({
   onClose: () => void;
   onEdit: () => void;
 }) {
-  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [text, setText] = useState(todo?.text);
   const [status, setStatus] = useState(todo?.status);
@@ -152,7 +152,7 @@ export function EditTodoModal({
       return;
     }
 
-    setIsSaving(true);
+    setIsLoading(true);
 
     const body: UpdateTodoRequest = {
       text,
@@ -178,8 +178,34 @@ export function EditTodoModal({
       });
     }
 
-    setIsSaving(false);
+    setIsLoading(false);
   }, [todo, text, status, onEdit, onClose]);
+
+  const handleDelete = useCallback(async () => {
+    if (!todo) return;
+
+    setIsLoading(true);
+
+    try {
+      await apiRequest(`/todos/${todo.id}`, 'DELETE');
+
+      onEdit();
+      onClose();
+
+      notifications.show({
+        message: 'Todo deleted',
+        color: 'green',
+      });
+    } catch (e) {
+      notifications.show({
+        title: 'Failed to delete todo',
+        message: (e as Error).message,
+        color: 'red',
+      });
+    }
+
+    setIsLoading(false);
+  }, [todo, onEdit, onClose]);
 
   return (
     <Modal title="Edit todo" opened={isOpen} onClose={onClose} centered>
@@ -240,15 +266,24 @@ export function EditTodoModal({
         </Alert>
       )}
 
-      <Box mt="sm">
+      <Flex mt="sm" align="center" justify="space-between">
         <Button
           onClick={handleSave}
           disabled={!text || !!lockedBy}
-          loading={isSaving}
+          loading={isLoading}
         >
           Save changes
         </Button>
-      </Box>
+
+        <Button
+          variant="light"
+          color="red"
+          onClick={handleDelete}
+          disabled={isLoading || !!lockedBy}
+        >
+          Delete
+        </Button>
+      </Flex>
     </Modal>
   );
 }

@@ -17,9 +17,9 @@ import {
 } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useDisclosure } from '@mantine/hooks';
-import TimeAgo from 'react-timeago';
 import { AddTodoModal, EditTodoModal } from './todo-modals';
 import { User, useTodoCollaboration } from '@renderer/utils/collaboration';
+import { TodoDate } from '@renderer/utils/dates';
 
 export type Todo = Omit<
   CollectionTodosResponse['todos'][number],
@@ -170,7 +170,7 @@ export function TodoPanel({
       if (!todo) return;
       lockTodo(todo.id);
     },
-    [isConnected],
+    [isConnected, todos],
   );
 
   const handleOpenTodo = useCallback((todo: Todo) => {
@@ -344,17 +344,13 @@ function Todo({
     >
       <Box className={classes.todoText}>{todo.text}</Box>
       <Box className={classes.todoMeta}>
-        <TodoDate date={todo.updatedAt} />
-        <Box>{todo.assignedTo.name}</Box>
+        <Box>
+          <TodoDate date={todo.updatedAt} />
+        </Box>
+        <Box mt={-2}>{todo.assignedTo.name}</Box>
       </Box>
     </Box>
   );
-}
-
-export function TodoDate({ date }: { date: string | Date }) {
-  const parsedDate = useMemo(() => new Date(date), [date]);
-
-  return <TimeAgo date={parsedDate} minPeriod={10} />;
 }
 
 async function changeTodoStatus(todo: Todo, newStatus: TodoStatus) {
