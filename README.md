@@ -2,7 +2,7 @@
 
 Simple TODO app with collaborations and locks. Uses restful API and websockets for collaboration.
 
-<video src="./assets/demo.mov" controls></video>
+<video src="https://github.com/user-attachments/assets/09b5818e-4027-4fc2-9dd2-9459bd846dd5" controls></video>
 
 # Server
 
