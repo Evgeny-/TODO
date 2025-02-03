@@ -10,7 +10,6 @@ Simple TODO app with collaborations and locks. Uses restful API and websockets f
 - Postgres database ([db schema](./server/prisma/schema.prisma))
 - Tests with vitest and playwright
 - WS for collaboration
-- ESBuild for speed
 
 ## Start server
 
@@ -40,7 +39,7 @@ $ npm run test:e2e # make sure server is running
 ```bash
 $ cd electron-client
 $ npm install
-$ npm run start
+$ npm run start # tested for mac and linux
 ```
 
 ## Run tests
